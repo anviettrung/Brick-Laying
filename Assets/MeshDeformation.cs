@@ -5,20 +5,24 @@ using UnityEngine;
 public class MeshDeformation : MonoBehaviour
 {
 	[Range(0, 1)]
-	public float process;
+	public float value;
 	public float rangeXZ;
 	public float rangeY;
 	public Vector3 endScale;
 	protected Vector3 startScale;
 
+	public BoxCollider boxCollider;
+
 	Mesh deformingMesh;
 	Vector3[] originalVertices, displacedVertices;
+	float[] deltaXZ;
 
 	protected Vector3 center { get { return deformingMesh.bounds.center; } }
 	protected float bottom { get { return deformingMesh.bounds.min.y; } }
 	protected float baseCenterToBot;
 
 	public Vector3 extent;
+	public Vector3 Extent { get { return deformingMesh.bounds.extents; } }
 
 	private void Start()
 	{
@@ -26,8 +30,10 @@ public class MeshDeformation : MonoBehaviour
 		originalVertices = deformingMesh.vertices;
 
 		displacedVertices = new Vector3[originalVertices.Length];
+		deltaXZ = new float[originalVertices.Length];
 		for (int i = 0; i < originalVertices.Length; i++) {
 			displacedVertices[i] = originalVertices[i];
+			deltaXZ[i] = (originalVertices[i].y - center.y) / extent.y;
 		}
 
 		baseCenterToBot = center.y - bottom;
@@ -42,7 +48,7 @@ public class MeshDeformation : MonoBehaviour
 		deformingMesh.vertices = displacedVertices;
 		deformingMesh.RecalculateNormals();
 
-		UpdateYPosition(process);
+		UpdateYPosition(value);
 	}
 
 	public void UpdateYPosition(float value)
@@ -56,17 +62,17 @@ public class MeshDeformation : MonoBehaviour
 	private void UpdateVertex(int i)
 	{
 		// XZ plane
-		float deltaXZ = (originalVertices[i].y - center.y) / extent.y;
+		float delta_xz = (originalVertices[i].y - center.y) / Extent.y;
 
 		Vector3 outDirection = (originalVertices[i] - center);
 		outDirection.y = 0;
 
 		// Y Axis
-		float deltaY = 1 - Mathf.Abs(deltaXZ);
+		float deltaY = 1 - Mathf.Abs(delta_xz);
 
 
 		displacedVertices[i] = originalVertices[i] 
-			+ outDirection.normalized * process * (-deltaXZ * deltaXZ + 1) * rangeXZ
-			- transform.up * process * deltaY * rangeY;
+			+ outDirection.normalized * value * (-delta_xz * delta_xz + 1) * rangeXZ
+			- transform.up * value * deltaY * rangeY;
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Brick : MonoBehaviour
 {
 	[Range(0, 1)]
-	public float process;
+	public float value;
 	public MeshDeformation[] targets;
 	public Vector3 originalPosition;
 	public Vector3 targetPosition;
@@ -18,7 +18,7 @@ public class Brick : MonoBehaviour
 	private void Update()
 	{
 		for (int i = 0; i < targets.Length; i++)
-			targets[i].process = process;
-		transform.position = Vector3.Lerp(originalPosition, targetPosition, process);
+			targets[i].value = value;
+		transform.position = Vector3.Lerp(originalPosition, targetPosition, value);
 	}
 }
