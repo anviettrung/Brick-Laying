@@ -6,6 +6,7 @@ public class MeshDeformation : MonoBehaviour
 {
 	[Range(0, 1)]
 	public float value;
+	public bool updateRealtime;
 	private float lastValue = -1;
 
 	protected Mesh deformingMesh;
@@ -39,7 +40,7 @@ public class MeshDeformation : MonoBehaviour
 		if (deformingMesh.vertices.Length != originalVertices.Length)
 			CalculateVertices();
 
-		if (System.Math.Abs(lastValue - value) > EPSILON) {
+		if (System.Math.Abs(lastValue - value) > EPSILON || updateRealtime) {
 			for (int i = 0; i < displacedVertices.Length; i++) {
 				UpdateVertex(i);
 			}

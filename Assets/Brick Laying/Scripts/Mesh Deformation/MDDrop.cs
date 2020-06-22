@@ -12,10 +12,13 @@ public class MDDrop : MeshDeformation
 	public float dropTime;
 	public float accelerateY;
 	public Direction direction;
+	public bool xAxis = true;
 
 	protected override void UpdateVertex(int i)
 	{
-		float xLocation = (originalVertices[i].x - oCenter.x) / extent.x;
+		float xLocation = 0;
+		//((originalVertices[i].x - oCenter.x) / extent.x) : (originalVertices[i].z - oCenter.z) / extent.z)
+		xLocation = xAxis ? ((originalVertices[i].x - oCenter.x) / extent.x) : ((originalVertices[i].z - oCenter.z) / extent.z);
 		xLocation = (xLocation + 1) * 0.5f;
 		float delta = 0;
 
@@ -25,8 +28,8 @@ public class MDDrop : MeshDeformation
 				delta = xLocation < value ? delta : 0;
 				break;
 			case Direction.RightToLeft:
-				delta = dropTime * Mathf.Abs(1-xLocation - value);
-				delta = 1-xLocation < value ? delta : 0;
+				delta = dropTime * Mathf.Abs(1 - xLocation - value);
+				delta = 1 - xLocation < value ? delta : 0;
 				break;
 		}
 

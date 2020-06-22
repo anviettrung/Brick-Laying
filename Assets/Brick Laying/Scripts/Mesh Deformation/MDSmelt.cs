@@ -10,6 +10,7 @@ public class MDSmelt : MeshDeformation
 	public Vector3 endScale;
 	protected Vector3 startScale;
 
+	public bool updateY = false;
 	protected float[] deltaXZ;
 	protected float baseCenterToBot;
 
@@ -31,10 +32,12 @@ public class MDSmelt : MeshDeformation
 	}
 	protected override void UpdateYPosition(float value)
 	{
-		//transform.localScale = Vector3.Lerp(startScale, endScale, value);
-		//Vector3 newPos = Vector3.zero;
-		//newPos.y = -(1 - transform.localScale.y) * baseCenterToBot;
-		//transform.localPosition = newPos;
+		if (updateY) {
+			transform.localScale = Vector3.Lerp(startScale, endScale, value);
+			Vector3 newPos = Vector3.zero;
+			newPos.y = -(1 - transform.localScale.y) * baseCenterToBot;
+			transform.localPosition = newPos;
+		}
 	}
 	protected override void UpdateVertex(int i)
 	{
@@ -49,17 +52,16 @@ public class MDSmelt : MeshDeformation
 
 		// Y Axis
 		float deltaY = Mathf.Abs(delta_xz);
-		//if (delta_xz >= 0)
-		//deltaY *= rangeY;
 		if (delta_xz >= 0)
 			deltaY = (1 - deltaY);
 		else if (delta_xz > -0.5f)
-			deltaY = (1 + deltaY * 2);
+			deltaY = (1 + deltaY * 1.5f);
 		else
 			deltaY = 4 * (1 - deltaY);
 
-		displacedVertices[i] = originalVertices[i]
-			+ outDirection.normalized * value * (-delta_xz * delta_xz + 1) * rangeXZ
-			- Vector3.up * value * deltaY * rangeY;
+		outDirection = outDirection.normalized * value * (-delta_xz * delta_xz + 1) * rangeXZ;// Rotate
+		//outDirection = Quaternion.Euler(rangeY * (1-Mathf.Abs(delta_xz)), 0, 0) * outDirection;
+
+		displacedVertices[i] = originalVertices[i] + outDirection - Vector3.up * value * deltaY * rangeY;
 	}
 }
