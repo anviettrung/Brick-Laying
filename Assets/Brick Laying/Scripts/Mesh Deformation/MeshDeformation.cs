@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
+public class EventInt : UnityEvent<int> { }
 
 public class MeshDeformation : MonoBehaviour
 {
@@ -10,7 +13,7 @@ public class MeshDeformation : MonoBehaviour
 	private float lastValue = -1;
 
 	protected Mesh deformingMesh;
-	protected Vector3[] originalVertices, displacedVertices;
+	public Vector3[] originalVertices, displacedVertices;
 
 	protected Vector3 center { get { return deformingMesh.bounds.center; } }
 	protected float bottom { get { return deformingMesh.bounds.min.y; } }
@@ -18,6 +21,8 @@ public class MeshDeformation : MonoBehaviour
 	protected Vector3 extent;
 
 	public static float EPSILON = 0.001f;
+
+	public EventInt onUpdateVertex = new EventInt();
 
 	protected virtual void Start()
 	{
@@ -37,12 +42,15 @@ public class MeshDeformation : MonoBehaviour
 	}
 	protected virtual void Update()
 	{
-		if (deformingMesh.vertices.Length != originalVertices.Length)
+		if (deformingMesh.vertices.Length != originalVertices.Length) {
 			CalculateVertices();
+			onUpdateVertex.RemoveAllListeners();
+		}
 
 		if (System.Math.Abs(lastValue - value) > EPSILON || updateRealtime) {
 			for (int i = 0; i < displacedVertices.Length; i++) {
 				UpdateVertex(i);
+				onUpdateVertex.Invoke(i);
 			}
 			deformingMesh.vertices = displacedVertices;
 			deformingMesh.RecalculateNormals();
@@ -51,6 +59,7 @@ public class MeshDeformation : MonoBehaviour
 			lastValue = value;
 		}
 	}
+
 	protected virtual void UpdateYPosition(float value) {}
 	protected virtual void UpdateVertex(int i) { }
 }

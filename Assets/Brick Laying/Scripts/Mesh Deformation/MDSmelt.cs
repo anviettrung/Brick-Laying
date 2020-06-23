@@ -11,8 +11,9 @@ public class MDSmelt : MeshDeformation
 	protected Vector3 startScale;
 
 	public bool updateY = false;
-	protected float[] deltaXZ;
+	public float[] deltaXZ;
 	protected float baseCenterToBot;
+	public Transform[] bezierPoint;
 
 	protected override void Start()
 	{
@@ -26,9 +27,9 @@ public class MDSmelt : MeshDeformation
 		base.CalculateVertices();
 
 		deltaXZ = new float[originalVertices.Length];
-		for (int i = 0; i < originalVertices.Length; i++) {
+		for (int i = 0; i < originalVertices.Length; i++)
 			deltaXZ[i] = (originalVertices[i].y - oCenter.y) / extent.y; // [-1, 1]
-		}
+		
 	}
 	protected override void UpdateYPosition(float value)
 	{
@@ -60,7 +61,6 @@ public class MDSmelt : MeshDeformation
 			deltaY = 4 * (1 - deltaY);
 
 		outDirection = outDirection.normalized * value * (-delta_xz * delta_xz + 1) * rangeXZ;
-		//outDirection = Quaternion.Euler(rangeY * (1-Mathf.Abs(delta_xz)), 0, 0) * outDirection;
 
 		displacedVertices[i] = originalVertices[i] + outDirection - Vector3.up * value * deltaY * rangeY;
 	}
