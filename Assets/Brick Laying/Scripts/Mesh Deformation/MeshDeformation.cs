@@ -42,15 +42,15 @@ public class MeshDeformation : MonoBehaviour
 	}
 	protected virtual void Update()
 	{
-		if (deformingMesh.vertices.Length != originalVertices.Length) //{
+		if (deformingMesh.vertices.Length != originalVertices.Length) {
 			CalculateVertices();
-		//	onUpdateVertex.RemoveAllListeners();
-		//}
+			onUpdateVertex.RemoveAllListeners();
+		}
 
 		if (System.Math.Abs(lastValue - value) > EPSILON || updateRealtime) {
 			for (int i = 0; i < displacedVertices.Length; i++) {
 				UpdateVertex(i);
-				//onUpdateVertex.Invoke(i);
+				onUpdateVertex.Invoke(i);
 			}
 			deformingMesh.vertices = displacedVertices;
 			deformingMesh.RecalculateNormals();

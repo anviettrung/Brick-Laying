@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using EzySlice;
+
+public class EventSlice : UnityEvent<GameObject, bool> { }
 
 public class SliceByKey : MonoBehaviour
 {
-	public MouseSlice mouseSlice;
 	public GameObject[] objToSlice;
 
 	public EventSlice onSliceMesh = new EventSlice();
@@ -14,8 +16,8 @@ public class SliceByKey : MonoBehaviour
 	{
 		onSliceMesh.AddListener((o, upper) => {
 			o.GetComponent<MDSmelt>().value = 0;
+			Destroy(o.GetComponent<MDSmelt>());
 			if (upper) {
-				Destroy(o.GetComponent<MDSmelt>());
 				MDDrop mdDrop = o.GetComponent<MDDrop>();
 				mdDrop.enabled = true;
 				StartCoroutine(CoroutineUtils.Chain(
@@ -26,6 +28,15 @@ public class SliceByKey : MonoBehaviour
 						o.GetComponent<Rigidbody>().useGravity = true;
 					})
 				));
+			} else {
+				MeshDeformation[] md = o.GetComponents<MeshDeformation>();
+				MeshDeformationExtent[] mde = o.GetComponents<MeshDeformationExtent>();
+
+				for (int i = 0; i < md.Length; i++)
+					Destroy(md[i]);
+
+				for (int i = 0; i < mde.Length; i++)
+					Destroy(mde[i]);
 			}
 		});
 	}
@@ -33,7 +44,6 @@ public class SliceByKey : MonoBehaviour
 	public void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Space)) {
-			//mouseSlice.Slice(objToSlice, transform.position, transform.right);
 			for (int i = 0; i < objToSlice.Length; i++)
 				Slice(objToSlice[i], transform.position, transform.right);
 		}
