@@ -53,13 +53,13 @@ public class MDSmelt : MeshDeformation
 		// Y Axis
 		float deltaY = Mathf.Abs(delta_xz);
 		if (delta_xz >= 0)
-			deltaY = (1 - deltaY);
+			deltaY = 1 - deltaY;
 		else if (delta_xz > -0.5f)
-			deltaY = (1 + deltaY * 1.5f);
+			deltaY = 1 + deltaY * 1.5f;
 		else
 			deltaY = 4 * (1 - deltaY);
 
-		outDirection = outDirection.normalized * value * (-delta_xz * delta_xz + 1) * rangeXZ;// Rotate
+		outDirection = outDirection.normalized * value * (-delta_xz * delta_xz + 1) * rangeXZ;
 		//outDirection = Quaternion.Euler(rangeY * (1-Mathf.Abs(delta_xz)), 0, 0) * outDirection;
 
 		displacedVertices[i] = originalVertices[i] + outDirection - Vector3.up * value * deltaY * rangeY;
