@@ -11,9 +11,9 @@ public class MDSmelt : MeshDeformation
 	protected Vector3 startScale;
 
 	public bool updateY = false;
-	public float[] deltaXZ;
+
+	[HideInInspector] public float[] deltaXZ;
 	protected float baseCenterToBot;
-	public Transform[] bezierPoint;
 
 	protected override void Start()
 	{
