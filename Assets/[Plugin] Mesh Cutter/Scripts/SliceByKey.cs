@@ -13,8 +13,8 @@ public class SliceByKey : MonoBehaviour
 	public void Start()
 	{
 		onSliceMesh.AddListener((o, upper) => {
+			o.GetComponent<MDSmelt>().value = 0;
 			if (upper) {
-				o.GetComponent<MDSmelt>().value = 0;
 				Destroy(o.GetComponent<MDSmelt>());
 				MDDrop mdDrop = o.GetComponent<MDDrop>();
 				mdDrop.enabled = true;
