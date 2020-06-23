@@ -8,7 +8,7 @@ public class EventSlice : UnityEvent<GameObject, bool> { }
 
 public class SliceByKey : MonoBehaviour
 {
-	public GameObject[] objToSlice;
+	public  GameObject[] objToSlice;
 
 	public EventSlice onSliceMesh = new EventSlice();
 
